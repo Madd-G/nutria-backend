@@ -8,7 +8,7 @@ from schemas.vegetable import Vegetable
 route = APIRouter()
 
 
-@route.get('/')
+@route.get('/get-fruit')
 def fetch_fruit():
     return conn.execute(fruits.select()).fetchall()
 
