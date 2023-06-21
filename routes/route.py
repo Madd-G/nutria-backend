@@ -25,7 +25,8 @@ def fetch_all():
     with engine.begin() as connection:
         r1 = connection.execute(fruveg.select())
         # return connection.execute(fruveg.select()).fetchall()
-        return {'data': connection.execute(fruveg.select()).fetchall()}
+        # return {'data': connection.execute(fruveg.select()).fetchall()}
+        return {'data': conn.execute(fruveg.select()).fetchall()}
     # return {'data': conn.execute(fruveg.select()).fetchall()}
     # except:
     #     conn.rollback()
