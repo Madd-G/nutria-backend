@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql.sqltypes import String
 from config.db import conn, engine
 from starlette.responses import JSONResponse
@@ -22,15 +23,27 @@ def fetch_all():
     # session.close()
     # return JSONResponse(content=fruveg.select()).fetchall()
     # try:
-    with engine.begin() as connection:
-        r1 = connection.execute(fruveg.select())
-        # return connection.execute(fruveg.select()).fetchall()
-        # return {'data': connection.execute(fruveg.select()).fetchall()}
-        return {'data': conn.execute(fruveg.select()).fetchall()}
+    # with engine.begin() as connection:
+    # r1 = connection.execute(fruveg.select())
+    # return connection.execute(fruveg.select()).fetchall()
+    # return {'data': connection.execute(fruveg.select()).fetchall()}
     # return {'data': conn.execute(fruveg.select()).fetchall()}
     # except:
     #     conn.rollback()
     #     conn.close()
+
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    try:
+        yield {'data': session.execute(fruveg.select()).fetchall()}
+        # return {'data': conn.execute(fruveg.select()).fetchall()}
+        session.commit()
+    except:
+        # if any kind of exception occurs, rollback transaction
+        session.rollback()
+        raise
+    finally:
+        session.close()
 
 # @route.get('/nutria/get_articles')
 # def fetch_all_article():
